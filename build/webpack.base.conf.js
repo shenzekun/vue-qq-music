@@ -51,6 +51,10 @@ module.exports = {
                 loader: 'tslint-loader'
             },
             {
+                test: /\.s[a|c]ss$/,
+                loader: 'style!css!sass'
+            },
+            {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
