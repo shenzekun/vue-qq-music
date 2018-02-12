@@ -21,7 +21,7 @@
                         <a :href='"https://y.qq.com/w/taoge.html?ADTAG=myqq&from=myqq&channel=10007100&id="+list.id'>
                             <div class="list-media">
                                 <img :src="list.picUrl">
-                                <span class="listen_count"><span class="icon icon_listen"></span>{{list.accessnum | accessnum }}</span>
+                                <span class="listen_count"><span class="icon icon_listen"></span>{{list.accessnum | dealNum }}</span>
                                 <span class="icon icon_play"></span>
                             </div>
                             <div class="list-info">
@@ -45,7 +45,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import Swipe from '../../components/Swipe.vue';
 import { RECOMMEND_URL } from '../../config/api';
-import fetch from '../../config/fetch';
 import { recommendList } from '../../service/getData';
 import mixin from '../../config/mixin';
 
@@ -67,7 +66,6 @@ export default class recommend extends Vue {
                 this.songList = res.data.songList;
                 this.slider = res.data.slider;
                 this.isLoading = false;
-                console.log(res);
             }).catch(err => {
                 console.log(err);
             });

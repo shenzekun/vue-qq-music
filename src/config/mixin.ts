@@ -1,6 +1,6 @@
 const mixin = {
     filters: {
-        accessnum(num) {
+        dealNum(num) {
             return (num / 10000).toFixed(1) + '万';
         }
     }

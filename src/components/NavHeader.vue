@@ -10,12 +10,11 @@
             v-for="(list,index) in navConfig" 
             :key="list.key"
             @click="changeNav(index)"
-            :class="{active:index === curIndex}">{{list.name}}</li>
+            :class="{active:index === curIndex}"><router-link :to="list.href" tag="li">{{list.name}}</router-link></li>
         </ul>
     </nav>
   </div>
 </template>
-
 
 
 <script lang="ts">
@@ -27,15 +26,18 @@ export default class NavHeader extends Vue {
     navConfig = [
         {
             name: '推荐',
-            key: 1
+            key: 1,
+            href: '/'
         },
         {
             name: '排行榜',
-            key: 2
+            key: 2,
+            href: '/rank'
         },
         {
             name: '搜索',
-            key: 3
+            key: 3,
+            href: '/search'
         }
     ];
     curIndex: number = 0;
