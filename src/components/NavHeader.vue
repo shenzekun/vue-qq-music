@@ -9,8 +9,8 @@
             <li class="nav-item" 
             v-for="(list,index) in navConfig" 
             :key="list.key"
-            @click="changeNav(list,index)"
-            :class="{active:index == curIndex}">{{list.name}}</li>
+            @click="changeNav(index)"
+            :class="{active:index === curIndex}">{{list.name}}</li>
         </ul>
     </nav>
   </div>
@@ -38,9 +38,9 @@ export default class NavHeader extends Vue {
             key: 3
         }
     ];
-    curIndex:number = 0;
+    curIndex: number = 0;
 
-    changeNav(list, index) {
+    changeNav(index: number) {
         this.curIndex = index;
     }
 }

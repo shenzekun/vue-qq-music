@@ -1,9 +1,9 @@
 <template>
   <div class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swp-page swiper-slide" v-for="list in lists" :key="list.id">
-        <a class="js-no-follow" v-bind:href="list.clickUrl">
-          <img class="goods-main-photo fadeIn" :src="list.image">
+      <div class="swiper-slide" v-for="list in lists" :key="list.id">
+        <a :href="list.linkUrl">
+          <img :src="list.picUrl">
         </a>
       </div>
     </div>
@@ -11,10 +11,18 @@
   </div>
 </template>
 
-<style scoped>
+<style>
+@import '../../node_modules/swiper/dist/css/swiper.css';
 .swiper-slide img {
     height: 100%;
     width: 100%;
+}
+.swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+}
+.swiper-pagination-bullet-active {
+  background: white;
 }
 </style>
 
@@ -24,20 +32,19 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import Swiper from 'swiper';
-import 'swiper/dist/css/swiper.min.css';
 
 @Component
 export default class Swipe extends Vue {
-    name: 'swipe';
     @Prop({ required: true })
-    list: any;
+    lists: any;
 
     mounted() {
         new Swiper('.swiper-container', {
             loop: true,
             pagination: {
                 el: '.swiper-pagination'
-            }
+            },
+            autoplay: true
         });
     }
 }

@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import NavHeader from '../components/NavHeader';
-
+import App from '../App.vue'
+import recommend from '../pages/recommend/recommend';
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'NavHeader',
-      component: NavHeader
+      name: 'recommend',
+      component: recommend
     }
   ]
 })
