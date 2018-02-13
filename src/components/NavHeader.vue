@@ -7,10 +7,8 @@
     <nav class="navbar">
         <ul class="nav-list">
             <li class="nav-item" 
-            v-for="(list,index) in navConfig" 
-            :key="list.key"
-            @click="changeNav(index)"
-            :class="{active:index === curIndex}"><router-link :to="list.href" tag="li">{{list.name}}</router-link></li>
+            v-for="(list) in navConfig" 
+            :key="list.key"><router-link :to="list.href" tag="li" exact-active-class="active">{{list.name}}</router-link></li>
         </ul>
     </nav>
   </div>
@@ -26,25 +24,20 @@ export default class NavHeader extends Vue {
     navConfig = [
         {
             name: '推荐',
-            key: 1,
+            key: 0,
             href: '/'
         },
         {
             name: '排行榜',
-            key: 2,
+            key: 1,
             href: '/rank'
         },
         {
             name: '搜索',
-            key: 3,
+            key: 2,
             href: '/search'
         }
     ];
-    curIndex: number = 0;
-
-    changeNav(index: number) {
-        this.curIndex = index;
-    }
 }
 </script>
 
@@ -87,7 +80,7 @@ export default class NavHeader extends Vue {
             color: $nav-item-color;
             height: $nav-item-height;
             line-height: $nav-item-height;
-            &.active {
+            & .active {
                 color: $nav-item-active;
                 &:after {
                     position: absolute;
@@ -103,4 +96,5 @@ export default class NavHeader extends Vue {
         }
     }
 }
+
 </style>

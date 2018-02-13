@@ -58,7 +58,7 @@ export default class rank extends Vue {
 </script>
 
 <style lang="scss" scoped>
-#rank-view {
+.rank-view {
     margin: 10px;
 }
 

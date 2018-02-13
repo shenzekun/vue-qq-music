@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "qs": "^6.5.1",
     "swiper": "^4.1.6",
     "vue": "^2.5.2",
     "vue-class-component": "^6.1.2",
@@ -18,6 +19,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/webpack-env": "^1.13.5",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
