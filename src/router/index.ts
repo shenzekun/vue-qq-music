@@ -7,6 +7,7 @@ import recommend from '../pages/recommend/recommend.vue';
 
 // ts 按需加载需要@types/webpack-env 这个包
 const rank = r => require.ensure([], () => r(require('../pages/rank/rank')), 'rank');
+const search = r => require.ensure([], () => r(require('../pages/search/search')), 'search');
 
 Vue.use(Router);
 
@@ -21,6 +22,11 @@ export default new Router({
             path: '/rank',
             name: 'rank',
             component: rank
+        },
+        {
+            path: '/search',
+            name: 'search',
+            component: search
         }
     ]
 });

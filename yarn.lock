@@ -6071,6 +6071,10 @@ vue@^2.5.2:
   version "2.5.13"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.5.13.tgz#95bd31e20efcf7a7f39239c9aa6787ce8cf578e1"
 
+vuex-class@^0.3.0:
+  version "0.3.0"
+  resolved "http://registry.npm.taobao.org/vuex-class/download/vuex-class-0.3.0.tgz#25047ab042580fd4ff3e64cc76603ac217c9190d"
+
 vuex@^3.0.1:
   version "3.0.1"
   resolved "http://registry.npm.taobao.org/vuex/download/vuex-3.0.1.tgz#e761352ebe0af537d4bb755a9b9dc4be3df7efd2"

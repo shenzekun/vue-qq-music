@@ -20,6 +20,7 @@
       "scripthost"
     ],
     "sourceMap": true,
-    "pretty": true
+    "pretty": true,
+    "strictFunctionTypes": false
   }
 }

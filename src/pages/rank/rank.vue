@@ -48,7 +48,6 @@ export default class rank extends Vue {
             .then(res => {
                 this.rankList = res.data.topList;
                 this.isLoading = false;
-                console.log(res);
             })
             .catch(err => {
                 console.log(err);

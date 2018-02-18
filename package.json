@@ -16,7 +16,8 @@
     "vue-class-component": "^6.1.2",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-class": "^0.3.0"
   },
   "devDependencies": {
     "@types/webpack-env": "^1.13.5",
