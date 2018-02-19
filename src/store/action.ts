@@ -1,11 +1,10 @@
-import { GET_HISTORY_KEY } from './mutation-types';
-import { ActionTree } from 'vuex';
+import { SET_HISTORY_KEY } from './mutation-types';
 
-const getLocalStorageData = ({ commit }, payload) => {
-    commit(GET_HISTORY_KEY, payload.historyKey);
+const setLocalStorageData = ({ commit }, keyword) => {
+    commit(SET_HISTORY_KEY, keyword);
 };
 
 const actions = {
-    getLocalStorageData
+    setLocalStorageData
 };
 export default actions;

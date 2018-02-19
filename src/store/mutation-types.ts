@@ -1,2 +1,2 @@
-// 获得搜索历史
-export const GET_HISTORY_KEY = 'GET_HISTORY_KEY';
+// 缓存搜索历史
+export const SET_HISTORY_KEY = 'SET_HISTORY_KEY';

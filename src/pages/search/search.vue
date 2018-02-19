@@ -11,18 +11,25 @@
             </div>
             <div class="search-cancel" v-show="isShowCancel">取消</div>
           </div>
-          <div class="record-keys">
-            
+          <div class="record-keys" v-if="history.length > 0 && isShowHistory">
+            <li v-for="item in history">
+                <a href="#" class="record-main">
+                    <span class="icon icon-clock"></span>
+                    <span class="record-con ellipsis">{{item}}</span>
+                    <span class="icon icon-close"></span>
+                </a>
+            </li>
+            <p class="record-delete">清除搜索记录</p>
           </div>
-          <div class="search-results">
+          <div class="search-results" v-show="isShowSearchResults">
                 <div class="song-list">
                     <a class="song-item" 
                         :href="'#player?artist='+artist+'&songmid='+list.songmid+'&songid='+list.songid+'&songname='+list.songname+'&albummid='+list.albummid+'&duration='+list.interval"
                         v-for="list in searchResult" :key="list.songid"
                         >
                         <i class="icon icon-music"></i>
-                        <div class="song-name">{{list.songname}}</div>
-                        <div class="song-artist"><span v-for="artist in list.singer" :key="artist.mid">{{artist.name}}&nbsp;</span></div>
+                        <div class="song-name" v-html="list.songname"></div>
+                        <div class="song-artist"><span v-for="artist in list.singer" v-html="artist.name+'&nbsp;'"></span></div>
                     </a>
                 </div>
                 <div class="search-loading" v-show="fetching">
@@ -31,7 +38,7 @@
                     <div class="loading-done" v-show="!isLoad">已加载全部</div>
                 </div>
           </div>
-          <div class="mod-search-result" id="hot-keys">
+          <div class="mod-search-result" id="hot-keys" v-show="!isShowHistory && !isShowSearchResults">
                <h3 class="result-tit">热门搜索</h3>
                <div class="result-tags">
                   <a :href="data.special_url" class="tag tag-hot" v-if="data.special_url">{{data.special_key}}</a>
@@ -43,11 +50,13 @@
 </template>
 
 <script lang="ts">
+
+// 问题： a 标签的 href 要转义🐶
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { hotList, searchList } from '../../service/getData';
 // import { mapState, mapMutations, mapActions } from 'vuex';
-import getLocalStorageData from '../../store/';
+// import * as actions from '../../store/action';
 import { Action } from 'vuex-class';
 import { Watch } from 'vue-property-decorator';
 
@@ -61,9 +70,14 @@ export default class search extends Vue {
     page = 1; //默认页数为1
     isShowCancel = false; // 是否显示取消
     isShowDelete = false; // 是否显示取消
+    isShowHistory = false; // 是否显示历史记录
+    isShowSearchResults = false //是否显示搜索结果
     songsObject = {}; // 存放歌曲,用来判断是否搜索改变了
     searchResult = null; //搜索结果
     artist = null; // 歌曲的演唱者
+    history = []; // 放历史记录
+    @Action('setLocalStorageData') setLocalStorage
+    
 
     mounted() {
         hotList().then(res => {
@@ -72,6 +86,7 @@ export default class search extends Vue {
             this.hotkeys = this.shuffle(hotkey, 6);
         });
         window.addEventListener('scroll', this.onScroll.bind(this));
+        this.history = localStorage.getItem('SET_HISTORY_KEY') ?  localStorage.getItem('SET_HISTORY_KEY').split(',') : []
     }
 
     enter(e) {
@@ -82,6 +97,9 @@ export default class search extends Vue {
             this.reset();
         }
         if (e.keyCode !== 13) return;
+        this.isShowHistory = false;
+        this.isShowSearchResults = true;
+        this.addHistory(this.keyword)
         this.search(this.keyword);
     }
 
@@ -90,12 +108,14 @@ export default class search extends Vue {
         //如果点击到了输入按钮
         if (e.target.matches('#search')) {
             this.isShowCancel = true;
+            this.isShowHistory = true;
         }
 
         //如果点击到了取消按钮
         if (e.target.matches('.search-cancel')) {
             this.isShowCancel = false;
             this.isShowDelete = false;
+            this.isShowHistory = false;
             this.reset();
         }
 
@@ -103,6 +123,29 @@ export default class search extends Vue {
         if (e.target.matches('.icon-delete')) {
             this.isShowDelete = false;
             this.reset();
+        }
+
+        // 如果匹配到了清除搜索记录
+        if (e.target.matches('.record-delete')) {
+            this.history = []
+            this.setLocalStorage(this.history);
+        }
+
+        //如果匹配到了单条记录的删除按钮
+        if (e.target.matches('.icon-close')) {
+            let index = this.history.indexOf(e.target.previousElementSibling.innerHTML);
+            this.history.splice(index,1);
+            this.setLocalStorage(this.history);
+        }
+
+        //如果点到了热门搜索的关键词或者点到了搜索记录的歌
+        if (e.target.matches('.tag-keyword') || e.target.matches('.record-con')) {
+            this.keyword = e.target.innerHTML;
+            this.isShowDelete = true;
+            this.isShowCancel = true;
+            this.isShowHistory = false;
+            this.addHistory(this.keyword);
+            this.search(this.keyword);
         }
     }
 
@@ -166,6 +209,15 @@ export default class search extends Vue {
         this.isLoad = true;
         this.songsObject = {};
         this.searchResult = null;
+    }
+
+    // 添加历史
+    addHistory(keyword) {
+        let index = this.history.indexOf(keyword);
+        if (index === -1) {
+            this.history.unshift(keyword);
+            this.setLocalStorage(this.history);
+        }
     }
 
     //洗牌
