@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <nav-header></nav-header>
-    <router-view/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
@@ -16,6 +18,7 @@ import NavHeader from './components/NavHeader.vue';
   }
 })
 export default class App extends Vue {
+
 }
 </script>
 

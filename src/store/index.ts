@@ -5,7 +5,10 @@ import actions from './action';
 Vue.use(Vuex);
 
 const state = {
-    historyKey: ''
+    historyKey: '',
+    isShowPlayer: false,
+    song: '',
+    artist: ''
 };
 export default new Vuex.Store({
     state,

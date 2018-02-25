@@ -32,10 +32,12 @@
                         <div class="song-artist"><span v-for="artist in list.singer" v-html="artist.name+'&nbsp;'"></span></div>
                     </a>
                 </div>
-                <div class="search-loading" v-show="fetching">
+                <div class="search-loading show" v-show="fetching">
                     <i class="loading-icon"></i>
                     <div class="loading-text">正在载入更多...</div>
-                    <div class="loading-done" v-show="!isLoad">已加载全部</div>
+                </div>
+                <div class="search-loading show" v-show="!isLoad">
+                    <div class="loading-done">已加载全部</div>
                 </div>
           </div>
           <div class="mod-search-result" id="hot-keys" v-show="!isShowHistory && !isShowSearchResults">
@@ -45,13 +47,12 @@
                   <a href="#" class="tag tag-keyword" v-for="hotkey in hotkeys" :key="hotkey.n">{{hotkey.k}}</a>
                </div>
           </div>
-     </div>
-  </div>
+     </div> <!-- search-view -->
+     <player></player>
+  </div> <!-- tab-contents -->
 </template>
 
 <script lang="ts">
-
-// 问题： a 标签的 href 要转义🐶
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { hotList, searchList } from '../../service/getData';
@@ -59,8 +60,13 @@ import { hotList, searchList } from '../../service/getData';
 // import * as actions from '../../store/action';
 import { Action } from 'vuex-class';
 import { Watch } from 'vue-property-decorator';
+import Player from '../../components/Player.vue';
 
-@Component
+@Component({
+    components: {
+        Player
+    }
+})
 export default class search extends Vue {
     hotkeys = null; //获取黑色的 hotkey
     data = ''; //获取红色的 hotkey
@@ -71,13 +77,12 @@ export default class search extends Vue {
     isShowCancel = false; // 是否显示取消
     isShowDelete = false; // 是否显示取消
     isShowHistory = false; // 是否显示历史记录
-    isShowSearchResults = false //是否显示搜索结果
+    isShowSearchResults = false; //是否显示搜索结果
     songsObject = {}; // 存放歌曲,用来判断是否搜索改变了
     searchResult = null; //搜索结果
     artist = null; // 歌曲的演唱者
     history = []; // 放历史记录
-    @Action('setLocalStorageData') setLocalStorage
-    
+    @Action('setLocalStorageData') setLocalStorage;
 
     mounted() {
         hotList().then(res => {
@@ -86,7 +91,9 @@ export default class search extends Vue {
             this.hotkeys = this.shuffle(hotkey, 6);
         });
         window.addEventListener('scroll', this.onScroll.bind(this));
-        this.history = localStorage.getItem('SET_HISTORY_KEY') ?  localStorage.getItem('SET_HISTORY_KEY').split(',') : []
+        this.history = localStorage.getItem('SET_HISTORY_KEY')
+            ? localStorage.getItem('SET_HISTORY_KEY').split(',')
+            : [];
     }
 
     enter(e) {
@@ -99,7 +106,7 @@ export default class search extends Vue {
         if (e.keyCode !== 13) return;
         this.isShowHistory = false;
         this.isShowSearchResults = true;
-        this.addHistory(this.keyword)
+        this.addHistory(this.keyword);
         this.search(this.keyword);
     }
 
@@ -127,14 +134,14 @@ export default class search extends Vue {
 
         // 如果匹配到了清除搜索记录
         if (e.target.matches('.record-delete')) {
-            this.history = []
+            this.history = [];
             this.setLocalStorage(this.history);
         }
 
         //如果匹配到了单条记录的删除按钮
         if (e.target.matches('.icon-close')) {
             let index = this.history.indexOf(e.target.previousElementSibling.innerHTML);
-            this.history.splice(index,1);
+            this.history.splice(index, 1);
             this.setLocalStorage(this.history);
         }
 
@@ -144,6 +151,7 @@ export default class search extends Vue {
             this.isShowDelete = true;
             this.isShowCancel = true;
             this.isShowHistory = false;
+            this.isShowSearchResults = true;
             this.addHistory(this.keyword);
             this.search(this.keyword);
         }
