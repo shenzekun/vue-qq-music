@@ -23,14 +23,14 @@
           </div>
           <div class="search-results" v-show="isShowSearchResults">
                 <div class="song-list">
-                    <a class="song-item" 
-                        :href="'#player?artist='+artist+'&songmid='+list.songmid+'&songid='+list.songid+'&songname='+list.songname+'&albummid='+list.albummid+'&duration='+list.interval"
+                    <div class="song-item" 
                         v-for="list in searchResult" :key="list.songid"
+                        @click="showPlayerDetail(list)"
                         >
                         <i class="icon icon-music"></i>
                         <div class="song-name" v-html="list.songname"></div>
                         <div class="song-artist"><span v-for="artist in list.singer" v-html="artist.name+'&nbsp;'"></span></div>
-                    </a>
+                    </div>
                 </div>
                 <div class="search-loading show" v-show="fetching">
                     <i class="loading-icon"></i>
@@ -48,7 +48,7 @@
                </div>
           </div>
      </div> <!-- search-view -->
-     <player></player>
+     <player :song="song" :artist="artist" v-if="isShowPlayer"></player>
   </div> <!-- tab-contents -->
 </template>
 
@@ -80,9 +80,27 @@ export default class search extends Vue {
     isShowSearchResults = false; //是否显示搜索结果
     songsObject = {}; // 存放歌曲,用来判断是否搜索改变了
     searchResult = null; //搜索结果
-    artist = null; // 歌曲的演唱者
     history = []; // 放历史记录
-    @Action('setLocalStorageData') setLocalStorage;
+
+    @Action('setLocalStorageData') setLocalStorageData;
+    @Action('showPlayer') showPlayer;
+    @Action('getSong') getSong;
+
+
+    // 计算 song
+    get song() {
+        return this.$store.state.song;
+    }
+
+    // 计算artist
+    get artist() {
+        return this.$store.state.artist;
+    }
+
+    // 计算 isShowPlayer
+    get isShowPlayer() {
+        return this.$store.state.isShowPlayer;
+    }
 
     mounted() {
         hotList().then(res => {
@@ -96,6 +114,7 @@ export default class search extends Vue {
             : [];
     }
 
+    // 用户按 enter 时
     enter(e) {
         if (this.keyword) {
             this.isShowDelete = true;
@@ -135,14 +154,14 @@ export default class search extends Vue {
         // 如果匹配到了清除搜索记录
         if (e.target.matches('.record-delete')) {
             this.history = [];
-            this.setLocalStorage(this.history);
+            this.setLocalStorageData(this.history);
         }
 
         //如果匹配到了单条记录的删除按钮
         if (e.target.matches('.icon-close')) {
             let index = this.history.indexOf(e.target.previousElementSibling.innerHTML);
             this.history.splice(index, 1);
-            this.setLocalStorage(this.history);
+            this.setLocalStorageData(this.history);
         }
 
         //如果点到了热门搜索的关键词或者点到了搜索记录的歌
@@ -224,7 +243,7 @@ export default class search extends Vue {
         let index = this.history.indexOf(keyword);
         if (index === -1) {
             this.history.unshift(keyword);
-            this.setLocalStorage(this.history);
+            this.setLocalStorageData(this.history);
         }
     }
 
@@ -239,6 +258,12 @@ export default class search extends Vue {
             array.splice(random, 1);
         }
         return arr;
+    }
+
+    // 显示 player 的信息
+    showPlayerDetail(list) {
+        this.showPlayer();
+        this.getSong({ ...list });
     }
 }
 </script>

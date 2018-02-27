@@ -28,4 +28,7 @@ export default class App extends Vue {
 body {
     background: $body-background;
 }
+.noscroll {
+    overflow: hidden;
+}
 </style>

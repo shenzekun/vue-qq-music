@@ -5,10 +5,10 @@ import actions from './action';
 Vue.use(Vuex);
 
 const state = {
-    historyKey: '',
-    isShowPlayer: false,
-    song: '',
-    artist: ''
+    isShowPlayer: false, // 是否显示 player
+    song: {}, // 歌的信息
+    artist: '', // 歌的作者
+    isPlay: false // 是否播放
 };
 export default new Vuex.Store({
     state,

@@ -1,36 +1,36 @@
 <template>
    <transition name="show">
-        <div id="player" v-show="isShowPlayer" :class="{show: isShowPlayer}">
+        <div id="player" v-if="isShowPlayer" :class="{show: isShowPlayer}">
             <div class="player-container">
                 <div class="player-header">
-                    <img src="" alt="" class="album-cover">
+                    <img :src="getAlbumCover(song.albummid)" alt="图片" class="album-cover">
                     <div class="song-info">
-                        <div class="song-name"></div>
-                        <div class="song-artist"></div>
+                        <div class="song-name" v-html="song.songname"></div>
+                        <div class="song-artist" v-html="artist"></div>
                     </div>
-                    <span class="icon-action icon-play"></span>
+                    <span class="icon-action icon-play" :class="[isPlay? 'icon-pause':'icon-play']" @click="onPlay"></span>
                 </div>
                 <div class="player-lyrics">
-                    <div class="player-lyrics-lines">
-                        <div class="player-lyrics-line"></div>
+                    <div class="player-lyrics-lines" ref="lyricsLines">
+                        <div class="player-lyrics-line" v-for="list in lyrics" v-show="lyrics.length !== 0">{{list.slice(10)}}</div>
                     </div>
                 </div>
                 <div class="player-footer">
-                    <div class="icon-list"></div>
+                    <div class="icon-list" @click="exit"></div>
                     <div class="progress">
-                        <div class="progress-time progress-elapsed"></div>
+                        <div class="progress-time progress-elapsed">{{elapsed | formatTime}}</div>
                             <div class="progress-bar">
-                                <div class="progress-bar-progress"></div>
+                                <div class="progress-bar-progress" ref="$progress"></div>
                             </div>
-                        <div class="progress-time progress-duration"></div>
+                        <div class="progress-time progress-duration">{{song.interval | formatTime}}</div>
                     </div>
                     <div class="action">
                         <a href="#" class="btn-download">下载这首歌</a>
                     </div>
                 </div>
             </div>
-            <div class="player-background"></div>
-            <audio src="" ref="audio" @ended="onEnd()"></audio>
+            <div class="player-background" :style="{backgroundImage: 'url('+getAlbumCover(song.albummid)+')'}"></div>
+            <audio :src="getSongUrl(song.songmid)" ref="audio" @ended="onEnd()"></audio>
         </div><!--player-->
    </transition>
 </template>
@@ -39,33 +39,165 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { songUrl, lyricsUrl, albumCoverUrl } from '../config/utils';
+import { Action } from 'vuex-class';
+import { Prop } from 'vue-property-decorator';
+import mixin from '../config/mixin';
+import { getLyrics } from '../service/getData';
 
-@Component
+@Component({
+    mixins: [mixin]
+})
 export default class Player extends Vue {
+    @Prop(Object) song;
+
+    @Prop(String) artist;
+
+    @Action('cancelPlayer') cancelPlayer;
+    @Action('setPlayState') setPlayState;
+
     fetching = false; // 是否正在加载
-    duration = 0; //持续时间
+    duration = this.song.interval; //持续时间
     progress = 0; //进度条
     elapsed = 0; //当前时间
-    isShowPlayer = false;//是否显示 player
-
+    lyrics = []; //歌词
+    index = 0; //页数
+    isplay = false; // 是否 play
+    lyricIntervalId = 0; // 歌词setInterval 返回的 id
+    progressIntervalId = 0; // 进度条setInterval 返回的 id
+    LINE_HEIGHT = 42 // 歌词的高度
     // 使用 ref 的问题 参考 https://github.com/vuejs/vue-class-component/issues/94
     // $refs: {
     //     audio: HTMLAudioElement
     // }
 
+    // 计算isShowPlayer
+    get isShowPlayer() {
+        return this.$store.state.isShowPlayer;
+    }
+
+    get isPlay() {
+        return this.$store.state.isPlay;
+    }
+
+    created() {
+        this.init();
+    }
+
     mounted() {
-        console.log(this.$refs.audio);
+        document.body.classList.add('noscroll');
     }
 
+    // 初始化
+    init() {
+        this.fetching = true;
+        getLyrics(this.song.songid)
+            .then(res => res.lyric)
+            .then(text => {
+                this.index = 0;
+                this.lyrics = this.formatText(text).match(/^\[\d{2}:\d{2}.\d{2}\](.+)$/gm);
+            })
+            .catch(err => console.error(err))
+            .then(() => (this.fetching = false));
+    }
+
+    // 播放音频
+    onPlay() {
+        this.isplay = !this.isplay;
+        if (this.isplay) {
+            (this.$refs.audio as HTMLAudioElement).play();
+            this.setPlayState(true);
+            this.startLyrics();
+            this.startProgress();
+        } else {
+            (this.$refs.audio as HTMLAudioElement).pause();
+            this.setPlayState(false);
+        }
+    }
+
+    // 当一首歌播放结束的时候重新播放
     onEnd() {
-        (this.$refs.audio as HTMLAudioElement).play()
+        (this.$refs.audio as HTMLAudioElement).play();
     }
 
+    startLyrics() {
+        this.pauseLyrics();
+        this.lyricIntervalId = setInterval(this.updateLyrics.bind(this),1000);
+    }
+
+    // 暂停歌词
+    pauseLyrics() {
+        clearInterval(this.lyricIntervalId)
+    }
+
+    //更新歌词
+    updateLyrics() {
+        let _this = this;
+        (this.$refs.audio as HTMLAudioElement).ontimeupdate = function(e) {
+            for (let i = 0, l = _this.lyrics.length; i < l; i++) {
+                if (
+                    (_this.$refs.audio as HTMLAudioElement).currentTime /*当前播放的时间*/ >
+                    _this.getSeconds(_this.lyrics[i]) - 0.5
+                ) {
+                    (_this.$refs.lyricsLines as HTMLDivElement).children[_this.index].classList.remove('active');
+                    (_this.$refs.lyricsLines as HTMLDivElement).children[i].classList.add('active');
+                    _this.index = i;
+                }
+            }
+        }
+        if (this.index > 2) {
+            let y = -(this.index -2) * this.LINE_HEIGHT;
+            (this.$refs.lyricsLines as HTMLDivElement).style.transform = `translateY(${y}px)`;
+        }
+    }
+
+    // 启动进度条
+    startProgress() {
+        this.pauseProgress();
+        this.progressIntervalId = setInterval(this.updateProgress.bind(this), 50)
+    }
+
+    // 暂停进度条
+    pauseProgress() {
+        clearInterval(this.progressIntervalId)
+    }
+
+    // 更新进度条
+    updateProgress() {
+        this.elapsed += 0.05;
+        this.progress = this.elapsed / this.duration;
+        (this.$refs.$progress as HTMLDivElement).style.transform = `translateX(${this.progress * 100 - 100}%)`;
+    }
+
+    // 获取图片地址
+    getAlbumCover(id: number) {
+        return albumCoverUrl(id);
+    }
+
+    // 获取歌词的地址
+    getSongUrl(id: number) {
+        return songUrl(id);
+    }
+
+    //退出 player
+    exit() {
+        this.cancelPlayer();
+        this.setPlayState(false);
+        document.body.classList.remove('noscroll');
+    }
+
+    //获取秒数
     getSeconds(line) {
         return +line.replace(
             /^\[(\d{2}):(\d{2}\.\d{2}).*/,
             (match, p1, p2) => +p1 * 60 + parseFloat(<any>+p2)
         );
+    }
+
+    //格式化文本 类似[xx:xx.xx]xxxxx
+    formatText(text) {
+        let div = document.createElement('div');
+        div.innerHTML = text;
+        return div.innerText;
     }
 }
 </script>
@@ -74,10 +206,10 @@ export default class Player extends Vue {
 @import '../style/_var';
 
 .show-enter-active {
-    transition: all .5s;
+    transition: all 0.5s;
 }
 .show-leave-active {
-    transition: all .5s;
+    transition: all 0.5s;
 }
 
 #player {
