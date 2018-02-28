@@ -5,7 +5,7 @@
               <li class="top-item" v-for="item in rankList" :key="item.id">
                 <div class="top-item-media">
                 <a :href='"https://y.qq.com/w/toplist.html?ADTAG=myqq&from=myqq&channel=10007100&id="+item.id+"&type=top"'>
-                    <img :src="item.picUrl">
+                    <img v-lazy="item.picUrl">
                     <span class="listen_count"><i class="icon icon-listen"></i>{{item.listenCount | dealNum}}</span>
                 </a>
                 </div>

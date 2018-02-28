@@ -1,4 +1,10 @@
-import { SET_HISTORY_KEY, GET_SONG, SHOW_PLAYER, CANCEL_PLAYER, SET_PLAYING_STATE } from './mutation-types';
+import {
+    SET_HISTORY_KEY,
+    GET_SONG,
+    SHOW_PLAYER,
+    CANCEL_PLAYER,
+    SET_PLAYING_STATE
+} from './mutation-types';
 import { Mutation, MutationTree } from 'vuex';
 
 const mutations: MutationTree<any> = {

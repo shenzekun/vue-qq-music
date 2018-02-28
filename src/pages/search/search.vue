@@ -86,7 +86,6 @@ export default class search extends Vue {
     @Action('showPlayer') showPlayer;
     @Action('getSong') getSong;
 
-
     // 计算 song
     get song() {
         return this.$store.state.song;
@@ -102,12 +101,15 @@ export default class search extends Vue {
         return this.$store.state.isShowPlayer;
     }
 
-    mounted() {
+    created() {
         hotList().then(res => {
             let hotkey = res.data.hotkey;
             this.data = res.data;
             this.hotkeys = this.shuffle(hotkey, 6);
         });
+    }
+
+    mounted() {
         window.addEventListener('scroll', this.onScroll.bind(this));
         this.history = localStorage.getItem('SET_HISTORY_KEY')
             ? localStorage.getItem('SET_HISTORY_KEY').split(',')

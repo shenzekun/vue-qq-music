@@ -21,6 +21,7 @@
     ],
     "sourceMap": true,
     "pretty": true,
-    "strictFunctionTypes": false
+    "strictFunctionTypes": false,
+    "importHelpers": true
   }
 }

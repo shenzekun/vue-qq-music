@@ -1,5 +1,5 @@
 <template>
-   <transition name="show">
+   <transition name="show-transition">
         <div id="player" v-show="isShowPlayer" :class="{show: isShowPlayer}">
             <div class="player-container">
                 <div class="player-header">
@@ -13,6 +13,7 @@
                 <div class="player-lyrics">
                     <div class="player-lyrics-lines" ref="lyricsLines">
                         <div class="player-lyrics-line" v-for="list in lyrics" v-show="lyrics.length !== 0">{{list.slice(10)}}</div>
+                        <div class="player-lyrics-line" v-show="fetching">正在加载歌词,请等待...</div>
                     </div>
                 </div>
                 <div class="player-footer">
@@ -258,14 +259,14 @@ export default class Player extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import '../style/_var';
 
-.show-enter-active {
-    transition: all 0.5s;
+.show-transition-enter-active {
+    transition: transform .3s;
 }
-.show-leave-active {
-    transition: all 0.5s;
+.show-transition-leave-active {
+    transition: transform .3s;
 }
 
 #player {
@@ -277,6 +278,7 @@ export default class Player extends Vue {
     height: 100%;
     overflow: hidden;
     transform: translateX(-100%);
+    transition: all .5s;
     &.show {
         opacity: 1;
         transform: translateX(0);

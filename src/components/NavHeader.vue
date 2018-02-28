@@ -2,7 +2,7 @@
   <div>
     <header id="header">
         <img src="../assets/logo.png" alt="qq音乐" id="logo">
-        <a href="javascript:;" class="btn_download" id="show_player">播放器</a>
+        <a href="javascript:;" class="btn_download">下载APP</a>
     </header>
     <nav class="navbar">
         <ul class="nav-list">

@@ -41,14 +41,15 @@ module.exports = {
                 include: [
                     resolve('src'),
                     resolve('test'),
-                    resolve('node_modules/webpack-dev-server/client')
-                ]
+                    resolve('dist'),
+                    resolve('node_modules/webpack-dev-server/client'),
+                ],
             },
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
                 enforce: 'pre',
-                loader: 'tslint-loader'
+                loader: 'tslint-loader',
             },
             {
                 test: /\.s[a|c]ss$/,

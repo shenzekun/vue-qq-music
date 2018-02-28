@@ -4,7 +4,17 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router/index';
 import store from './store/';
+import VueLazyload from 'vue-lazyload';
+
+Vue.use(VueLazyload);
 Vue.config.productionTip = false;
+
+Vue.use(VueLazyload, {
+    preLoad: 1.3,
+    error: './assets/default_pic.jpg',
+    loading: './assets/default_pic.jpg',
+    attempt: 1
+});
 
 /* eslint-disable no-new */
 const init = new Vue({

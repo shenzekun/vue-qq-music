@@ -13,13 +13,11 @@ import Component from 'vue-class-component';
 import NavHeader from './components/NavHeader.vue';
 
 @Component({
-  components: {
-    NavHeader
-  }
+    components: {
+        NavHeader
+    }
 })
-export default class App extends Vue {
-
-}
+export default class App extends Vue {}
 </script>
 
 <style lang="scss">

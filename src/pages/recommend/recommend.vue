@@ -7,7 +7,7 @@
                 <div class="list">
                     <div class="list-item" v-for="radio in radioList" :key="radio.radioid">
                     <div class="list-media">
-                        <img :src="radio.picUrl">
+                        <img v-lazy="radio.picUrl">
                         <span class="icon icon_play"></span>
                     </div>
                     <div class="list-info">{{radio.Ftitle}}</div>
@@ -20,7 +20,7 @@
                     <div class="list-item" v-for="list in songList" :key="list.id">
                         <a :href='"https://y.qq.com/w/taoge.html?ADTAG=myqq&from=myqq&channel=10007100&id="+list.id'>
                             <div class="list-media">
-                                <img :src="list.picUrl">
+                                <img v-lazy="list.picUrl">
                                 <span class="listen_count"><span class="icon icon_listen"></span>{{list.accessnum | dealNum }}</span>
                                 <span class="icon icon_play"></span>
                             </div>

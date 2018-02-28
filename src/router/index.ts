@@ -14,6 +14,10 @@ Vue.use(Router);
 export default new Router({
     routes: [
         {
+            path: '',
+            component: recommend
+        },
+        {
             path: '/',
             name: 'recommend',
             component: recommend
