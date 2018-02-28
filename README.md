@@ -41,7 +41,7 @@ yarn
 npm run dev
 ```
 
-最后打开在浏览器中打开 http://localhost:8080/
+最后在浏览器中打开 http://localhost:8080/
 
 ## 项目结构
 
