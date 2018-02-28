@@ -13,11 +13,11 @@
           </div>
           <div class="record-keys" v-if="history.length > 0 && isShowHistory">
             <li v-for="item in history">
-                <a href="#" class="record-main">
+                <div class="record-main">
                     <span class="icon icon-clock"></span>
                     <span class="record-con ellipsis">{{item}}</span>
                     <span class="icon icon-close"></span>
-                </a>
+                </div>
             </li>
             <p class="record-delete">清除搜索记录</p>
           </div>
@@ -44,7 +44,7 @@
                <h3 class="result-tit">热门搜索</h3>
                <div class="result-tags">
                   <a :href="data.special_url" class="tag tag-hot" v-if="data.special_url">{{data.special_key}}</a>
-                  <a href="#" class="tag tag-keyword" v-for="hotkey in hotkeys" :key="hotkey.n">{{hotkey.k}}</a>
+                  <div class="tag tag-keyword" v-for="hotkey in hotkeys" :key="hotkey.n">{{hotkey.k}}</div>
                </div>
           </div>
      </div> <!-- search-view -->
@@ -71,6 +71,7 @@ export default class search extends Vue {
     hotkeys = null; //获取黑色的 hotkey
     data = ''; //获取红色的 hotkey
     keyword = ''; // 获取用户的搜索内容
+    getLastKeyword = ''; // 获取用户上一次的搜索内容
     fetching = false; //正在 fetch
     isLoad = true; //能否继续加载数据
     page = 1; //默认页数为1
@@ -160,7 +161,7 @@ export default class search extends Vue {
         }
 
         //如果匹配到了单条记录的删除按钮
-        if (e.target.matches('.icon-close')) {
+        if (e.target.matches('.icon .icon-close')) {
             let index = this.history.indexOf(e.target.previousElementSibling.innerHTML);
             this.history.splice(index, 1);
             this.setLocalStorageData(this.history);
@@ -184,10 +185,10 @@ export default class search extends Vue {
         if (keyword === undefined) keyword = '';
         if (keyword === '') return;
         //如果已经搜索过，并且没有改动 keyword 那么直接返回
-        if (this.keyword === keyword && this.songsObject[page || this.page]) return;
-        if (this.keyword !== keyword) this.reset();
+        if (this.getLastKeyword === keyword && this.songsObject[page || this.page]) return;
+        if (this.getLastKeyword !== keyword) this.reset();
         if (this.fetching || !this.isLoad) return;
-        this.keyword = keyword;
+        this.getLastKeyword = keyword;
         this.loading();
         searchList(keyword, page || this.page)
             .then(res => {
@@ -199,7 +200,6 @@ export default class search extends Vue {
                     this.searchResult = res.data.song.list;
                 }
                 this.isLoad = res.message !== 'no results';
-                console.log(res);
             })
             .then(() => this.accomplish())
             .catch(err => {
@@ -234,7 +234,6 @@ export default class search extends Vue {
     // 重置
     reset() {
         this.page = 1;
-        this.keyword = '';
         this.isLoad = true;
         this.songsObject = {};
         this.searchResult = null;

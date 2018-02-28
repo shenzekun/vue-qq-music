@@ -1,6 +1,10 @@
 # vue-qq-music
 
-> vue+typescript 重构qq音乐移动端
+> vue+typescript重构qq音乐移动端
+
+## 预览（请在手机上观看）
+
+[QQ音乐🎵](http://shenzekun.cn/vue-qq-music/dist/index.html)
 
 ## 说明
 
@@ -11,25 +15,103 @@
 2. [Vue2.5+ Typescript 引入全面指南 - Vuex篇](https://segmentfault.com/a/1190000011864013)
 
 
+## 安装方法
 
+打开终端 ，输入：
 
-
-## 安装
-
-
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+```bash
+git clone git@github.com:shenzekun/vue-qq-music.git
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+切换到克隆下来的文件夹：
+
+```bash
+cd vue-qq-music
+```
+
+然后输入：
+
+```bash
+yarn
+```
+
+然后运行
+
+```bash
+npm run dev
+```
+
+最后打开在浏览器中打开 http://localhost:8080/
+
+## 项目结构
+
+使用[see-dirtree](https://github.com/shenzekun/see-dirtree) 显示目录树
+
+```
+vue-qq-music
+├──LICENSE
+├──README.md
+├──index.html
+├──package.json
+├──tsconfig.json
+├──tslint.json
+├──yarn.lock
+├──static
+├──src
+│  ├──App.vue
+│  ├──main.ts
+│  ├──vue-shim.d.ts
+│  ├──style
+│  │  ├──_var.scss
+│  │  └──reset.scss
+│  ├──store
+│  │  ├──action.ts
+│  │  ├──index.ts
+│  │  ├──mutation-types.ts
+│  │  └──mutations.ts
+│  ├──service
+│  │  └──getData.ts
+│  ├──router
+│  │  └──index.ts
+│  ├──pages
+│  │  ├──search
+│  │  │  └──search.vue
+│  │  ├──recommend
+│  │  │  └──recommend.vue
+│  │  ├──rank
+│  │  │  └──rank.vue
+│  ├──config
+│  │  ├──api.ts
+│  │  ├──fetch.ts
+│  │  ├──mixin.ts
+│  │  └──utils.ts
+│  ├──components
+│  │  ├──NavHeader.vue
+│  │  ├──Player.vue
+│  │  └──Swipe.vue
+│  ├──assets
+│  │  ├──clock_ic.png
+│  │  ├──default_pic.jpg
+│  │  ├──favicon.ico
+│  │  ├──icon_loading.png
+│  │  ├──list_sprite.png
+│  │  ├──loading.gif
+│  │  ├──logo.png
+│  │  ├──search_sprite.png
+│  │  └──sprite_play.png
+├──config
+│  ├──dev.env.js
+│  ├──index.js
+│  └──prod.env.js
+├──build
+│  ├──build.js
+│  ├──check-versions.js
+│  ├──logo.png
+│  ├──utils.js
+│  ├──vue-loader.conf.js
+│  ├──webpack.base.conf.js
+│  ├──webpack.dev.conf.js
+│  └──webpack.prod.conf.js
+
+16 directories, 48 files.
+```
