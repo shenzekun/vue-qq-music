@@ -41,7 +41,6 @@ module.exports = {
                 include: [
                     resolve('src'),
                     resolve('test'),
-                    resolve('dist'),
                     resolve('node_modules/webpack-dev-server/client'),
                 ],
             },
