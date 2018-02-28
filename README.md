@@ -8,7 +8,7 @@
 
 ## 说明
 
-> 本项目是基于我的项目[qq 音乐](https://github.com/shenzekun/QMusic)重构完成，在此期间，参考了一些 vue 与 typescript 的整合的教程，对我帮助挺大的，感谢写这些教程的作者，以下是参考的教程：
+> 本项目是基于我的项目[qq 音乐](https://github.com/shenzekun/QMusic)重构完成。在此期间，参考了一些vue与typescript的整合的教程，对我帮助挺大的，感谢写这些教程的作者，以下是参考的教程：
 
 1. [vue + typescript 新项目起手式](https://segmentfault.com/a/1190000011744210#articleHeader12)
 
