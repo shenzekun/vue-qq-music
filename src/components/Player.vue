@@ -1,6 +1,6 @@
 <template>
    <transition name="show">
-        <div id="player" v-if="isShowPlayer" :class="{show: isShowPlayer}">
+        <div id="player" v-show="isShowPlayer" :class="{show: isShowPlayer}">
             <div class="player-container">
                 <div class="player-header">
                     <img :src="getAlbumCover(song.albummid)" alt="图片" class="album-cover">
@@ -40,7 +40,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { songUrl, lyricsUrl, albumCoverUrl } from '../config/utils';
 import { Action } from 'vuex-class';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 import mixin from '../config/mixin';
 import { getLyrics } from '../service/getData';
 
@@ -54,17 +54,21 @@ export default class Player extends Vue {
 
     @Action('cancelPlayer') cancelPlayer;
     @Action('setPlayState') setPlayState;
+    
 
     fetching = false; // 是否正在加载
+    isplay = false; // 是否 play
+
     duration = this.song.interval; //持续时间
     progress = 0; //进度条
     elapsed = 0; //当前时间
-    lyrics = []; //歌词
-    index = 0; //页数
-    isplay = false; // 是否 play
-    lyricIntervalId = 0; // 歌词setInterval 返回的 id
     progressIntervalId = 0; // 进度条setInterval 返回的 id
-    LINE_HEIGHT = 42 // 歌词的高度
+
+    lyrics = []; //歌词
+    index = 0; // 歌词页数
+    LINE_HEIGHT = 42; // 歌词的高度
+    lyricIntervalId = 0; // 歌词setInterval 返回的 id
+
     // 使用 ref 的问题 参考 https://github.com/vuejs/vue-class-component/issues/94
     // $refs: {
     //     audio: HTMLAudioElement
@@ -77,6 +81,18 @@ export default class Player extends Vue {
 
     get isPlay() {
         return this.$store.state.isPlay;
+    }
+
+    get $audio() {
+        return this.$refs.audio as HTMLAudioElement;
+    }
+
+    get $progress() {
+        return this.$refs.$progress as HTMLDivElement;
+    }
+
+    get $lyricsLines() {
+        return this.$refs.lyricsLines as HTMLDivElement;
     }
 
     created() {
@@ -103,69 +119,109 @@ export default class Player extends Vue {
     // 播放音频
     onPlay() {
         this.isplay = !this.isplay;
+        // 如果是 play
         if (this.isplay) {
-            (this.$refs.audio as HTMLAudioElement).play();
+            if (this.fetching) return;
+            this.$audio.play();
             this.setPlayState(true);
             this.startLyrics();
             this.startProgress();
-        } else {
-            (this.$refs.audio as HTMLAudioElement).pause();
-            this.setPlayState(false);
+        } else { // 如果是 pause
+            this.$audio.pause();
+            this.setPlayState(false); // 设置 play 的状态
+            this.pauseLyrics();
+            this.pauseProgress();
         }
     }
 
     // 当一首歌播放结束的时候重新播放
     onEnd() {
-        (this.$refs.audio as HTMLAudioElement).play();
+        this.$audio.play();
+        this.restartProgress();
+        this.restartLyrics();
     }
 
     startLyrics() {
         this.pauseLyrics();
-        this.lyricIntervalId = setInterval(this.updateLyrics.bind(this),1000);
+        this.lyricIntervalId = setInterval(this.updateLyrics.bind(this), 1000);
     }
 
     // 暂停歌词
     pauseLyrics() {
-        clearInterval(this.lyricIntervalId)
+        clearInterval(this.lyricIntervalId);
     }
 
     //更新歌词
     updateLyrics() {
         let _this = this;
-        (this.$refs.audio as HTMLAudioElement).ontimeupdate = function(e) {
+        this.$audio.ontimeupdate = function(e) {
             for (let i = 0, l = _this.lyrics.length; i < l; i++) {
                 if (
-                    (_this.$refs.audio as HTMLAudioElement).currentTime /*当前播放的时间*/ >
+                    _this.$audio.currentTime /*当前播放的时间*/ >
                     _this.getSeconds(_this.lyrics[i]) - 0.5
                 ) {
-                    (_this.$refs.lyricsLines as HTMLDivElement).children[_this.index].classList.remove('active');
-                    (_this.$refs.lyricsLines as HTMLDivElement).children[i].classList.add('active');
+                    _this.$lyricsLines.children[_this.index].classList.remove('active');
+                    _this.$lyricsLines.children[i].classList.add('active');
                     _this.index = i;
                 }
             }
-        }
+        };
         if (this.index > 2) {
-            let y = -(this.index -2) * this.LINE_HEIGHT;
-            (this.$refs.lyricsLines as HTMLDivElement).style.transform = `translateY(${y}px)`;
+            let y = -(this.index - 2) * this.LINE_HEIGHT;
+            this.$lyricsLines.style.transform = `translateY(${y}px)`;
         }
+    }
+
+    // 重置歌词
+    resetLyrics() {
+         this.pauseLyrics();
+         this.$lyricsLines.children[this.index].classList.remove('active');
+         this.index = 0;
+         this.$lyricsLines.style.transform = `translateY(0)`;
+         if (this.lyrics.length) {
+             this.$lyricsLines.children[this.index].classList.add('active');
+         }
+    }
+
+    // 重新开始歌词
+    restartLyrics() {
+         this.resetLyrics();
+         this.startLyrics();
     }
 
     // 启动进度条
     startProgress() {
         this.pauseProgress();
-        this.progressIntervalId = setInterval(this.updateProgress.bind(this), 50)
+        this.progressIntervalId = setInterval(this.updateProgress.bind(this), 50);
     }
 
     // 暂停进度条
     pauseProgress() {
-        clearInterval(this.progressIntervalId)
+        clearInterval(this.progressIntervalId);
     }
 
     // 更新进度条
     updateProgress() {
         this.elapsed += 0.05;
         this.progress = this.elapsed / this.duration;
-        (this.$refs.$progress as HTMLDivElement).style.transform = `translateX(${this.progress * 100 - 100}%)`;
+        this.$progress.style.transform = `translateX(${this.progress * 100 - 100}%)`;
+    }
+
+    //重置进度条
+    resetProgress(duration?: number) {
+        let $progress = this.pauseProgress();
+        this.elapsed = 0;
+        this.progress = 0;
+        this.$progress.style.transform = 'translate(-100%)';
+        if (duration) {
+            this.duration = +duration;
+        }
+    }
+
+    // 重新开始进度条
+    restartProgress() {
+        this.resetProgress();
+        this.startProgress();
     }
 
     // 获取图片地址
