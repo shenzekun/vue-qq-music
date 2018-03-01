@@ -42,9 +42,13 @@
           </div>
           <div class="mod-search-result" id="hot-keys" v-show="!isShowHistory && !isShowSearchResults">
                <h3 class="result-tit">热门搜索</h3>
-               <div class="result-tags">
+               <div class="result-tags" v-if="isGetHotKey">
                   <a :href="data.special_url" class="tag tag-hot" v-if="data.special_url">{{data.special_key}}</a>
                   <div class="tag tag-keyword" v-for="hotkey in hotkeys" :key="hotkey.n">{{hotkey.k}}</div>
+               </div>
+               <div class="search-loading show" v-show="!isGetHotKey">
+                    <i class="loading-icon"></i>
+                    <div class="loading-text">正在加载...</div>
                </div>
           </div>
      </div> <!-- search-view -->
@@ -82,6 +86,7 @@ export default class search extends Vue {
     songsObject = {}; // 存放歌曲,用来判断是否搜索改变了
     searchResult = null; //搜索结果
     history = []; // 放历史记录
+    isGetHotKey = false // 是否获得 hotkey
 
     @Action('setLocalStorageData') setLocalStorageData;
     @Action('showPlayer') showPlayer;
@@ -107,6 +112,7 @@ export default class search extends Vue {
             let hotkey = res.data.hotkey;
             this.data = res.data;
             this.hotkeys = this.shuffle(hotkey, 6);
+            this.isGetHotKey = true;
         });
     }
 
@@ -270,11 +276,8 @@ export default class search extends Vue {
 </script>
 
 <style scoped lang="scss">
-@mixin ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+@import '../../style/utils.scss';
+
 .search-bar {
     display: flex;
     background: #f4f4f4;

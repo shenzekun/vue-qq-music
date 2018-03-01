@@ -116,3 +116,8 @@ vue-qq-music
 
 16 directories, 48 files.
 ```
+
+## 使用的组件
+
+1. [swiper](https://github.com/nolimits4web/swiper)
+2. [vue-lazyload](https://github.com/hilongjw/vue-lazyload)

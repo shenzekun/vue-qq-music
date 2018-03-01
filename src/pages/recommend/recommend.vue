@@ -74,6 +74,8 @@ export default class recommend extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '../../style/utils.scss';
+
 .radios,
 .playlists {
     margin: 14px 10px 10px;
@@ -105,9 +107,7 @@ export default class recommend extends Vue {
                 padding: 0 7px 5px;
                 color: #000;
                 .list_tit {
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
+                    @include ellipsis;
                 }
             }
             .listen_count {

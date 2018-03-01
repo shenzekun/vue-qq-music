@@ -57,6 +57,8 @@ export default class rank extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '../../style/utils.scss';
+
 .rank-view {
     margin: 10px;
 }
@@ -128,9 +130,7 @@ export default class rank extends Vue {
         color: rgba(0, 0, 0, 0.5);
         .top-item-song {
             height: 20px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            @include ellipsis;
         }
         .song-index {
             float: left;

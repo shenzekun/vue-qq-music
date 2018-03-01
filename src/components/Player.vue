@@ -261,7 +261,7 @@ export default class Player extends Vue {
 
 <style lang="scss" scoped>
 @import '../style/_var';
-
+@import '../style/utils.scss';
 .show-transition-enter-active {
     transition: transform .3s;
 }
@@ -313,17 +313,13 @@ export default class Player extends Vue {
             color: #fff;
             font-weight: normal;
             height: 30px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            @include ellipsis;
         }
         .song-artist {
             font-size: 14px;
             height: 21px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
             color: #fff;
+            @include ellipsis;
         }
         .icon-action {
             width: 44px;
@@ -356,13 +352,11 @@ export default class Player extends Vue {
         .player-lyrics-line {
             height: 42px;
             line-height: 42px;
-            overflow: hidden;
             padding: 0 15px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             font-size: 16px;
             color: rgba(255, 255, 255, 0.6);
             text-align: center;
+            @include ellipsis;
         }
         .active {
             color: $color-primary;
