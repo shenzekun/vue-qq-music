@@ -4,7 +4,8 @@
 
 ## 预览（请在手机上观看）
 
-[QQ音乐🎵](http://shenzekun.cn/vue-qq-music/dist/index.html)
+> 可能加载有点慢，服务器在国外🤣 ===> [QQ音乐🎵](http://shenzekun.cn/vue-qq-music/dist/index.html)
+
 
 ## 说明
 
