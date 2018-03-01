@@ -1,6 +1,6 @@
 # vue-qq-music
 
-> vue+typescript重构qq音乐移动端
+> vue全家桶+typescript重构qq音乐移动端
 
 ## 预览（请在手机上观看）
 
