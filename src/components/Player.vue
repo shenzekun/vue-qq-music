@@ -72,7 +72,8 @@ export default class Player extends Vue {
 
     // 使用 ref 的问题 参考 https://github.com/vuejs/vue-class-component/issues/94
     // $refs: {
-    //     audio: HTMLAudioElement
+    //     audio: HTMLAudioElement,
+    //     lyricsLines: HTMLDivElement
     // }
 
     // 计算isShowPlayer
