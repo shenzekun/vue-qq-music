@@ -1,5 +1,5 @@
 <h1 align=center>
-    <img src="static/logo.svg" width=90%>
+    <img src="logo/banner.png">
 </h1>
 
 > vue全家桶+typescript重构qq音乐移动端
