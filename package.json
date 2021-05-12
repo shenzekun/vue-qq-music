@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "qs": "^6.5.1",
-    "swiper": "^4.1.6",
+    "swiper": "^6.5.1",
     "vue": "^2.5.2",
     "vue-class-component": "^6.2.0",
     "vue-property-decorator": "^6.0.0",
