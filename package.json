@@ -11,7 +11,7 @@
     "analyz": "NODE_ENV=production npm_config_report=true npm run build"
   },
   "dependencies": {
-    "qs": "^6.5.1",
+    "qs": "^6.5.3",
     "swiper": "^4.1.6",
     "vue": "^2.5.2",
     "vue-class-component": "^6.2.0",
